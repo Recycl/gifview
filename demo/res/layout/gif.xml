@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<com.ant.liao.GifView android:id="@+id/bk"
+		android:layout_height="fill_parent" android:layout_width="fill_parent" />	
+		
+		
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+	android:id="@+id/main"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	 
+	
+	
+	 
+		
+		android:src="@drawable/icon" />
+	<!--  <TextView android:id="@+id/tsxt" android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:text="click the Angel" />	-->
+	
+	  <com.ant.liao.GifView
+		android:id="@+id/gif2" android:layout_marginTop="200px"
+		android:layout_marginLeft="180px"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+</LinearLayout>
+</FrameLayout>
