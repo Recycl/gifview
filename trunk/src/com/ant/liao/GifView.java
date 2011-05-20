@@ -2,18 +2,18 @@ package com.ant.liao;
 
 import java.io.InputStream;
 
-import android.R;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -39,6 +39,8 @@ public class GifView extends ImageView implements GifAction{
 	private Context context = null;
 	
 	private boolean cacheImage = false;
+	
+	private View backView = null;
 	
 	private GifImageType animationType = GifImageType.SYNC_DECODER;
 
@@ -115,6 +117,14 @@ public class GifView extends ImageView implements GifAction{
     	gifDecoder.start();
     	
     	
+    }
+    
+    /**
+     * 把本Gif动画设置为另外view的背景
+     * @param v 要使用gif作为背景的view
+     */
+    public void setAsBackground(View v){
+        backView = v;
     }
     
     protected Parcelable onSaveInstanceState() {
@@ -275,8 +285,15 @@ public class GifView extends ImageView implements GifAction{
      
     private Handler redrawHandler = new Handler(){
     	public void handleMessage(Message msg) {
-    		drawImage();
-//    		invalidate();
+    	    try{
+        	    if(backView != null){
+                    backView.setBackgroundDrawable(new BitmapDrawable(currentImage));
+                }else{
+                    drawImage();
+                }
+    	    }catch(Exception ex){
+    	        Log.e("GifView", ex.toString());
+    	    }
     	}
     };
     
@@ -295,35 +312,32 @@ public class GifView extends ImageView implements GifAction{
     		        //如果单帧，不进行动画
     		        GifFrame f = gifDecoder.next();
     		        currentImage = f.image;
-    		        gifDecoder.free();
+                    gifDecoder.free();
+                    reDraw();
+    		        
     		        break;
     		    }
-    			if(pause == false){
-	    			//if(gifDecoder.parseOk()){
-	    				GifFrame frame = gifDecoder.next();
-	    				if(frame == null){
-	    					SystemClock.sleep(10);
-	    					continue;
-	    				}
-	    				if(frame.image != null)
-	    				    currentImage = frame.image;
-	    				else if(frame.imageName != null){
-	    				    currentImage = BitmapFactory.decodeFile(frame.imageName);
-	    				}
-	    				long sp = frame.delay;	    				
-	    				if(redrawHandler != null){
-	    					Message msg = redrawHandler.obtainMessage();
-	    					redrawHandler.sendMessage(msg);
-	    					SystemClock.sleep(sp); 
-	    				}else{
-	    					break;
-	    				}
-//	    			}else{
-//	    				currentImage = gifDecoder.getImage();
-//	    				break;
-//	    			}
-    			}else{
-    				SystemClock.sleep(50);
+                if (pause == false) {
+                    GifFrame frame = gifDecoder.next();
+
+                    if (frame == null) {
+                        SystemClock.sleep(50);
+                        continue;
+                    }
+                    if (frame.image != null)
+                        currentImage = frame.image;
+                    else if (frame.imageName != null) {
+                        currentImage = BitmapFactory.decodeFile(frame.imageName);
+                    }
+                    long sp = frame.delay;
+                    if (redrawHandler != null) {
+                        reDraw();
+                        SystemClock.sleep(sp);
+                    } else {
+                        break;
+                    }
+                } else {
+                    SystemClock.sleep(50);
     			}
     		}
     	}
