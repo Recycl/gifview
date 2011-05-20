@@ -39,18 +39,23 @@ public class TestAction extends Activity implements OnClickListener{
 		
 		setContentView(R.layout.gif);
 		
+		gf1 = (GifView)findViewById(R.id.gif1);
+		gf1.setGifImage(R.drawable.gif1);
+		
 		
 		gf2 = (GifView)findViewById(R.id.gif2);
 		gf2.setGifImageType(GifImageType.SYNC_DECODER);
-		
-		
-		
+		LayoutParams la = new LayoutParams(80,150);
+		la.setMargins(180, 200, 0, 0);
+		gf2.setLayoutParams(la);
 		gf2.setGifImage(R.drawable.a);
 		//gf2.setOnClickListener(this);
 		
-		GifView bk = (GifView)findViewById(R.id.bk);
-		bk.setGifImageType(GifImageType.COVER);
-		bk.setGifImage(R.drawable.d);
+		LinearLayout ll = (LinearLayout)findViewById(R.id.main);
+		GifView bb = new GifView(this);
+		bb.setAsBackground(ll);
+		bb.setGifImage(R.drawable.d);
+
 	}
 	
 	
